@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recebendo JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 600px;
+        }
+
+        .data-item {
+            margin-bottom: 20px;
+        }
+
+        .data-label {
+            font-weight: bold;
+        }
+
+        .data-value {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Lista de Itens em JSON</h2>
+        <ul id="json-list" class="data-list"></ul>
+    </div>
+
+    <script>
+        const endpoint = 'http://localhost:8080';
+
+        fetch(endpoint)
+            .then(response => response.json())
+            .then(data => {
+                const jsonList = document.getElementById('json-list');
+
+                data.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'data-item';
+
+                    const idLabel = document.createElement('span');
+                    idLabel.className = 'data-label';
+                    idLabel.textContent = 'ID:';
+
+                    const idValue = document.createElement('span');
+                    idValue.className = 'data-value';
+                    idValue.textContent = item.id;
+
+                    const nameLabel = document.createElement('span');
+                    nameLabel.className = 'data-label';
+                    nameLabel.textContent = 'Nome:';
+
+                    const nameValue = document.createElement('span');
+                    nameValue.className = 'data-value';
+                    nameValue.textContent = item.nome;
+
+                    const senhaLabel = document.createElement('span');
+                    senhaLabel.className = 'data-label';
+                    senhaLabel.textContent = 'Senha:';
+
+                    const senhaValue = document.createElement('span');
+                    senhaValue.className = 'data-value';
+                    senhaValue.textContent = item.senha;
+
+                    const scoreLabel = document.createElement('span');
+                    scoreLabel.className = 'data-label';
+                    scoreLabel.textContent = 'Score:';
+
+                    const scoreValue = document.createElement('span');
+                    scoreValue.className = 'data-value';
+                    scoreValue.textContent = item.score;
+
+                    const idChefeLabel = document.createElement('span');
+                    idChefeLabel.className = 'data-label';
+                    idChefeLabel.textContent = 'ID do Chefe:';
+
+                    const idChefeValue = document.createElement('span');
+                    idChefeValue.className = 'data-value';
+                    idChefeValue.textContent = item.id_chefe !== null ? item.id_chefe : 'N/A';
+
+                    listItem.appendChild(idLabel);
+                    listItem.appendChild(idValue);
+                    listItem.appendChild(document.createElement('br'));
+                    listItem.appendChild(nameLabel);
+                    listItem.appendChild(nameValue);
+                    listItem.appendChild(document.createElement('br'));
+                    listItem.appendChild(senhaLabel);
+                    listItem.appendChild(senhaValue);
+                    listItem.appendChild(document.createElement('br'));
+                    listItem.appendChild(scoreLabel);
+                    listItem.appendChild(scoreValue);
+                    listItem.appendChild(document.createElement('br'));
+                    listItem.appendChild(idChefeLabel);
+                    listItem.appendChild(idChefeValue);
+
+                    jsonList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao buscar dados:', error);
+            });
+    </script>
+</body>
+</html>

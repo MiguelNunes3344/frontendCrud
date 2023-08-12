@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Associar Subordinados e Chefes</title>
+</head>
+<body>
+    <h1>Associar Subordinados e Chefes</h1>
+    <div>
+        <label for="selecionar-subordinado">Selecione um subordinado:</label>
+        <select id="selecionar-subordinado">
+            <!-- Opções serão preenchidas aqui dinamicamente -->
+            <option value="">Selecione um subordinado</option>
+        </select>
+    </div>
+    <div>
+        <label for="selecionar-chefe">Selecione um chefe:</label>
+        <select id="selecionar-chefe">
+            <!-- Opções serão preenchidas aqui dinamicamente -->
+            <option value="">Selecione um chefe</option>
+        </select>
+    </div>
+    <button id="associar-dados">Associar</button>
+    
+    <script>
+        async function carregarUsuarios() {
+            try {
+                const response = await fetch("http://localhost:8080");
+                const data = await response.json();
+                
+                const subordinadoSelect = document.getElementById("selecionar-subordinado");
+                const chefeSelect = document.getElementById("selecionar-chefe");
+                
+                data.forEach(usuario => {
+                    const option = document.createElement("option");
+                    option.value = usuario.id;
+                    option.text = usuario.nome || `ID ${usuario.id}`;
+                    
+                    subordinadoSelect.appendChild(option.cloneNode(true));
+                    chefeSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar os dados:", error);
+            }
+        }
+
+        async function associarDados() {
+            const subordinadoSelect = document.getElementById("selecionar-subordinado");
+            const chefeSelect = document.getElementById("selecionar-chefe");
+            
+            const idSubordinado = subordinadoSelect.value;
+            const idChefe = chefeSelect.value;
+            
+            if (!idSubordinado || !idChefe) {
+                console.error("Selecione um subordinado e um chefe.");
+                return;
+            }
+            
+            const data = {
+                idSubordinado: parseInt(idSubordinado),
+                idChefe: parseInt(idChefe)
+            };
+            
+            try {
+                const response = await fetch("http://localhost:8080/associaChefe", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log("Associação realizada com sucesso.");
+                } else {
+                    console.error("Erro ao realizar a associação.");
+                }
+            } catch (error) {
+                console.error("Erro ao enviar os dados:", error);
+            }
+        }
+
+        window.onload = () => {
+            carregarUsuarios();
+            const associarButton = document.getElementById("associar-dados");
+            associarButton.addEventListener("click", associarDados);
+        };
+    </script>
+</body>
+</html>
